@@ -37,4 +37,4 @@ const upload = multer({
   
   // Middleware for single file upload
   
-  module.exports = { upload };
+ export {upload}

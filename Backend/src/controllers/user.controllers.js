@@ -7,7 +7,7 @@ import {ErrorHandler} from '../utils/errorHandler.js'
 const registerUser = asyncHandler(async( req, res, next) => {
    // get user details from frontend
    // validation - not empty
-   // check if user already exits, - usrename , mail
+   // check if user already exits, - username , mail
    // check for image - avatar
    // upload on them in cloudinary - avatar, cover image
    // CREATE user object - create a db entry
@@ -15,22 +15,28 @@ const registerUser = asyncHandler(async( req, res, next) => {
    // check for user creation 
    // return response
 
-   let {usrename, email, fullname, password} = req.body;
+   let {username, email, fullname, password} = req.body;
 
-   if(!usrename || !email || !fullname || !password){
+   
+
+   if(!username || !email || !fullname || !password){
       throw new ErrorHandler(400, "All fields are required!");
    }
    
 
    
    const existedUser = await User.findOne({
-      $or: [{ usrename }, { email }]
+      $or: [{ username }, { email }]
   })
 
-  if(!existedUser){
-   throw new ErrorHandler(409,"User with email or usrename already exists")
+  
+  
+
+  if(existedUser){
+   throw new ErrorHandler(409,"User with email or username already exists")
   }
 
+  console.log(req.files)
 
   const avatarLocalPath = req.files?.avatar[0]?.path;
 
@@ -53,7 +59,7 @@ const registerUser = asyncHandler(async( req, res, next) => {
       coverImage: coverImage?.url || "",
       email, 
       password,
-      usrename: usrename.toLowerCase()
+      username: username.toLowerCase()
   })
 
   const createdUser = await User.findById(user._id).select("-password -refreshToken");
