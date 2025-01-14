@@ -36,9 +36,5 @@ const upload = multer({
   });
   
   // Middleware for single file upload
-  const uploadSingle = upload.single('file'); // Replace 'file' with the field name in your form
   
-  // Middleware for multiple file uploads
-  const uploadMultiple = upload.array('files', 5); // 'files' is the field name; 5 is the max file count
-  
-  module.exports = { uploadSingle, uploadMultiple };
+  module.exports = { upload };
