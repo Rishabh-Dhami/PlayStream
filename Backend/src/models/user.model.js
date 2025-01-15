@@ -71,38 +71,42 @@ userSchema.pre('save', async function(next) {
 
 userSchema.methods.isPasswordCorrect = async function(candidatePassword){
     try {
-        const isMatch = await bcrypt.compare(candidatePassword, this.password);
-        return isMatch;
+        if (!candidatePassword || !this.password) {
+            throw new Error("Password comparison failed: missing input");
+        }
+        return await bcrypt.compare(candidatePassword, this.password);
     } catch (error) {
         throw new Error('Password comparison failed');
     }
 }
 
 
-userSchema.methods.generateAccessToken = function(){
-    const token =  jwt.sign(
+userSchema.methods.generateAccessToken = function() {
+    const token = jwt.sign(
         {
-            _id : this._id,
-            username : this.username,
-            email : this.email,
+            _id: this._id,
+            username: this.username,
+            // Consider removing email if not necessary
         },
         process.env.ACCESS_TOKEN_SECRET,
-        process.env.ACCESS_TOKEN_EXPIRY
-    )
+        { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }  // Correct placement
+    );
 
     return token;
-}
+};
 
-userSchema.methods.generateRefreshToken = function(){
-    const token =  jwt.sign(
+
+userSchema.methods.generateRefreshToken = function() {
+    const token = jwt.sign(
         {
-            _id : this._id,
+            _id: this._id,
         },
         process.env.REFRESH_TOKEN_SECRET,
-        process.env.REFRESH_TOKEN_EXPIRY
-    )
-    
+        { expiresIn: process.env.REFRESH_TOKEN_EXPIRY }  // Corrected
+    );
+
     return token;
-}
+};
+
 
 export const User = mongoose.model("User", userSchema);
