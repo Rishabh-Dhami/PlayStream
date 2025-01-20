@@ -132,8 +132,8 @@ const loginUser = asyncHandler(async(req, res, next) => {
 const logoutUser = asyncHandler(async(req, res, next) => {
    await User.findByIdAndUpdate(req.user._id,
       {
-         $set : {
-            refreshToken : undefined
+         $unset : {
+            refreshToken : 1
          }
       },{
          new : true
@@ -314,6 +314,9 @@ const updateUserCoverImage = asyncHandler(async(req, res) => {
 const getUserChannelProfile = asyncHandler(async(req, res) => {
    const {username} = req.params;
 
+   
+   
+
    if(!username){
       throw new ErrorHandler(400, "Username is  missing");
    }
@@ -321,7 +324,7 @@ const getUserChannelProfile = asyncHandler(async(req, res) => {
    const channel = await User.aggregate([
       {
          $match : {
-            username : username
+            username : username.toLowerCase()
          }
       },
       {
@@ -370,6 +373,9 @@ const getUserChannelProfile = asyncHandler(async(req, res) => {
          }
       }
    ]);
+
+  
+   
 
    if(!channel || !channel?.length){
       throw new ErrorHandler(400, "Channel is not exits");
