@@ -7,6 +7,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { fileURLToPath } from 'url';
 import { userRouter } from './routers/user.routes.js';
+import {tweetRouter}  from './routers/tweet.routes.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -27,5 +28,6 @@ app.get("/", (req, res) => {
 // create router
 
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/tweets", tweetRouter);
 
 export {app}
